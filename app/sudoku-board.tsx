@@ -1,12 +1,17 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, ScrollView, StyleSheet, View } from "react-native";
 import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
 import Mistakes from "../components/Mistakes";
 import PendingNumbers from "../components/PendingNumbers";
 import Score from "../components/Score";
 import SudokuGrid from "../components/SudokuGrid";
+import Timer from "../components/Timer";
+import { getHighlightedBlocks } from "../utils/highlight";
+import { handleNumberSelectUtil } from "../utils/numberSelect";
+import { getPendingNumbers } from "../utils/pending";
+import { generateSudokuMatrix } from "../utils/sudoku";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -59,29 +64,7 @@ export default function SudokuBoard() {
   useEffect(() => {
     // For demo, always load the sample file
     const sudoku = require("@/assets/sample-data/sudoku-sample.json");
-    const flat: Array<{ i: number; j: number }> = [];
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        flat.push({ i, j });
-      }
-    }
-    const revealCount = getRevealCount(difficulty as string);
-    for (let k = flat.length - 1; k > 0; k--) {
-      const idx = Math.floor(Math.random() * (k + 1));
-      [flat[k], flat[idx]] = [flat[idx], flat[k]];
-    }
-    const revealedSet = new Set(
-      flat.slice(0, revealCount).map(({ i, j }) => `${i},${j}`)
-    );
-    const newMatrix: Cell[][] = sudoku.game_matrics.map(
-      (row: any[], i: number) =>
-        row.map((cell: { num: number }, j: number) => ({
-          num: cell.num,
-          revealed: revealedSet.has(`${i},${j}`),
-          userNum: undefined,
-        }))
-    );
-    setMatrix(newMatrix);
+    setMatrix(generateSudokuMatrix(sudoku, difficulty as string));
   }, [difficulty]);
 
   type Cell = {
@@ -90,27 +73,6 @@ export default function SudokuBoard() {
     userNum?: number;
     mistake?: boolean;
   };
-
-  function getRevealCount(difficulty: string): number {
-    if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 78; // 40-42
-    if (difficulty === "Medium") return Math.floor(Math.random() * 3) + 30; // 30-32
-    return Math.floor(Math.random() * 3) + 20; // 20-22
-  }
-
-  function getPendingNumbers(matrix: Cell[][]): Record<number, number> {
-    const counts: Record<number, number> = {};
-    for (let n = 1; n <= 9; n++) counts[n] = 9;
-    matrix.forEach((row) => {
-      row.forEach((cell) => {
-        if (cell.revealed) {
-          counts[cell.num]--;
-        } else if (cell.userNum && !cell.mistake) {
-          counts[cell.userNum]--;
-        }
-      });
-    });
-    return counts;
-  }
 
   const pending = getPendingNumbers(matrix);
   const [selected, setSelected] = useState<{ i: number; j: number } | null>(
@@ -122,104 +84,50 @@ export default function SudokuBoard() {
   const [mistakes, setMistakes] = useState(0);
   const [score, setScore] = useState(0);
 
-  useEffect(() => {
-    const sudoku = require("@/assets/sample-data/sudoku-sample.json");
-    const flat: Array<{ i: number; j: number }> = [];
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        flat.push({ i, j });
-      }
-    }
-    const revealCount = getRevealCount(difficulty as string);
-    for (let k = flat.length - 1; k > 0; k--) {
-      const idx = Math.floor(Math.random() * (k + 1));
-      [flat[k], flat[idx]] = [flat[idx], flat[k]];
-    }
-    const revealedSet = new Set(
-      flat.slice(0, revealCount).map(({ i, j }) => `${i},${j}`)
-    );
-    const newMatrix: Cell[][] = sudoku.game_matrics.map(
-      (row: any[], i: number) =>
-        row.map((cell: { num: number }, j: number) => ({
-          num: cell.num,
-          revealed: revealedSet.has(`${i},${j}`),
-        }))
-    );
-    setMatrix(newMatrix);
-  }, [difficulty]);
-
   function handleNumberSelect(n: number) {
     if (!selected) return;
-    let correct = false;
-    let addScore = 0;
-    let deductScore = 0;
-    if (difficulty === "Easy") {
-      addScore = 10;
-      deductScore = 5;
-    } else if (difficulty === "Medium") {
-      addScore = 20;
-      deductScore = 5;
-    } else {
-      addScore = 50;
-      deductScore = 20;
-    }
     setMatrix((prev) => {
-      const next = prev.map((row) => row.map((cell) => ({ ...cell })));
-      const cell = next[selected.i][selected.j];
-      if (cell.revealed) return prev;
-      if (cell.userNum === n) return prev;
-      if (cell.num !== n) {
-        setMistakes((m) => m + 1);
-        setScore((s) => s - deductScore);
-        cell.mistake = true;
-        // Remove highlight after 2 seconds
-        setTimeout(() => {
-          setMatrix((current) => {
-            const updated = current.map((row, i) =>
-              row.map((c, j) => {
-                if (i === selected.i && j === selected.j) {
-                  return { ...c, mistake: false };
-                }
-                return c;
-              })
-            );
-            return updated;
-          });
-        }, 2000);
-        // Do NOT add the number to the block
-        return next;
-      }
-      cell.userNum = n;
-      cell.revealed = true;
-      cell.mistake = false;
-      setScore((s) => s + addScore);
-      correct = true;
-      return next;
+      let mistakeTimeout: any = null;
+      const result = handleNumberSelectUtil(
+        n,
+        selected,
+        prev,
+        difficulty as string,
+        mistakes,
+        score,
+        (cb) => {
+          mistakeTimeout = setTimeout(() => {
+            setMatrix((current) => {
+              const updated = current.map((row, i) =>
+                row.map((c, j) => {
+                  if (i === selected.i && j === selected.j) {
+                    return { ...c, mistake: false };
+                  }
+                  return c;
+                })
+              );
+              return updated;
+            });
+          }, 2000);
+        }
+      );
+      setMistakes(result.mistakes);
+      setScore(result.score);
+      if (result.correct) setSelected(null);
+      return result.updatedMatrix;
     });
-    // Remove focus if correct number is placed
-    if (correct) setSelected(null);
   }
 
   // Highlight all blocks with the same number for 2 seconds when a block with a number is focused
   useEffect(() => {
-    if (!selected) return;
-    const cell = matrix[selected.i]?.[selected.j];
-    if (!cell) return;
-    const value = cell.revealed ? cell.num : cell.userNum;
-    if (!value) return;
-    const blocks: Array<{ i: number; j: number }> = [];
-    matrix.forEach((row, i) => {
-      row.forEach((c, j) => {
-        if ((c.revealed ? c.num : c.userNum) === value) {
-          blocks.push({ i, j });
-        }
-      });
-    });
+    const blocks = getHighlightedBlocks(selected, matrix);
     setHighlightedBlocks(blocks);
-    const timeout = setTimeout(() => {
-      setHighlightedBlocks([]);
-    }, 2000);
-    return () => clearTimeout(timeout);
+    if (blocks.length > 0) {
+      const timeout = setTimeout(() => {
+        setHighlightedBlocks([]);
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
   }, [selected, matrix]);
 
   // ...existing code...
@@ -229,7 +137,7 @@ export default function SudokuBoard() {
       <View style={styles.headerRow}>
         <Mistakes count={mistakes} />
         <View style={styles.headerRight}>
-          <Text style={styles.timer}>{formatTime(seconds)}</Text>
+          <Timer seconds={seconds} />
           <Score value={score} />
         </View>
       </View>
