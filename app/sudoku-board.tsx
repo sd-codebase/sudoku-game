@@ -1,14 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
+import CongratsMessage from "../components/CongratsMessage";
+import EndGameButton from "../components/EndGameButton";
+import Mistakes from "../components/Mistakes";
+import PendingNumbers from "../components/PendingNumbers";
+import Score from "../components/Score";
+import SudokuGrid from "../components/SudokuGrid";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -94,7 +92,7 @@ export default function SudokuBoard() {
   };
 
   function getRevealCount(difficulty: string): number {
-    if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 40; // 40-42
+    if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 78; // 40-42
     if (difficulty === "Medium") return Math.floor(Math.random() * 3) + 30; // 30-32
     return Math.floor(Math.random() * 3) + 20; // 20-22
   }
@@ -229,109 +227,36 @@ export default function SudokuBoard() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRow}>
-        {/* <Text style={styles.title}>Sudoku Board ({difficulty})</Text> */}
-        {/* Show mistake block in pending number row */}
-        {mistakes > 0 && (
-          <View
-            style={[
-              styles.pendingItemColumn,
-              { backgroundColor: "#ffebee", borderColor: "#f44336" },
-            ]}
-          >
-            <Text style={[styles.pendingNum, { color: "#f44336" }]}>
-              Mistakes
-            </Text>
-            <Text style={styles.pendingCountSmall}>({mistakes})</Text>
-          </View>
-        )}
+        <Mistakes count={mistakes} />
         <View style={styles.headerRight}>
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
-          <Text
-            style={[
-              styles.score,
-              { color: score >= 0 ? "#388e3c" : "#d32f2f" },
-            ]}
-          >{`Score: ${score}`}</Text>
+          <Score value={score} />
         </View>
       </View>
 
       {/* Congratulations message if game is complete */}
-      {showCongrats && (
-        <Animated.View
-          style={[
-            styles.congratsPopup,
-            {
-              transform: [{ scale: congratsScale }],
-              top: Dimensions.get("window").height / 4,
-            },
-          ]}
-        >
-          <Text style={styles.congratsText}>🎉 Congratulations! 🎉</Text>
-          <Text style={styles.congratsSubText}>You completed the Sudoku!</Text>
-          <Text style={styles.congratsScore}>{`Your Score: ${score}`}</Text>
-        </Animated.View>
-      )}
+      <CongratsMessage
+        visible={showCongrats}
+        scale={congratsScale}
+        score={score}
+      />
 
-      <View style={styles.grid}>
-        {matrix.map((row, i) => (
-          <View key={i} style={styles.row}>
-            {row.map((cell, j) => {
-              const isSelected =
-                selected && selected.i === i && selected.j === j;
-              const isHighlighted = highlightedBlocks.some(
-                (b) => b.i === i && b.j === j
-              );
-              return (
-                <TouchableOpacity
-                  key={j}
-                  style={[
-                    styles.cell,
-                    cell.revealed ? styles.cellRevealed : styles.cellHidden,
-                    isSelected && styles.cellSelected,
-                    cell.mistake && styles.cellMistake,
-                    isHighlighted && styles.cellHighlighted,
-                  ]}
-                  onPress={() => setSelected({ i, j })}
-                >
-                  <Text
-                    style={
-                      cell.revealed ? styles.cellText : styles.cellTextHidden
-                    }
-                  >
-                    {cell.revealed ? cell.num : cell.userNum ?? ""}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        ))}
-      </View>
+      <SudokuGrid
+        matrix={matrix}
+        selected={selected}
+        highlightedBlocks={highlightedBlocks}
+        onSelect={setSelected}
+      />
+
       {/* Removed Pending Numbers title */}
-      <View style={styles.pendingListHorizontal}>
-        {Object.entries(pending).map(([num, count]) => (
-          <TouchableOpacity
-            key={num}
-            style={[
-              styles.pendingItemColumn,
-              selected ? styles.pendingItemActive : null,
-            ]}
-            disabled={!selected || count === 0}
-            onPress={() => handleNumberSelect(Number(num))}
-          >
-            <View style={styles.pendingItemInnerColumn}>
-              <Text style={styles.pendingNum}>{num}</Text>
-              <Text style={styles.pendingCountSmall}>{count}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <PendingNumbers
+        pending={pending}
+        selected={selected}
+        onSelect={handleNumberSelect}
+      />
 
       {/* End Game button at the end of the page content */}
-      {!isGameComplete && (
-        <TouchableOpacity style={styles.endGameButton} onPress={handleEndGame}>
-          <Text style={styles.endGameText}>End Game 😞</Text>
-        </TouchableOpacity>
-      )}
+      <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
     </ScrollView>
   );
 }
@@ -350,155 +275,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 12,
     marginBottom: 0,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1565c0",
-  },
-  grid: {
-    borderWidth: 2,
-    borderColor: "#1565c0",
-    backgroundColor: "#fff",
-    margin: 12,
-    alignSelf: "stretch",
-    aspectRatio: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  row: {
-    flexDirection: "row",
-    flex: 1,
-  },
-  cell: {
-    flex: 1,
-    aspectRatio: 1,
-    borderWidth: 1,
-    borderColor: "#bbb",
-    justifyContent: "center",
-    alignItems: "center",
-    minWidth: 0,
-    minHeight: 0,
-  },
-  cellRevealed: {
-    backgroundColor: "#eaf6ff",
-  },
-  cellHidden: {
-    backgroundColor: "#fff",
-  },
-  cellSelected: {
-    borderColor: "#1565c0",
-    borderWidth: 1,
-  },
-  cellText: {
-    fontSize: 18,
-    color: "#333",
-    fontWeight: "500",
-  },
-  cellTextHidden: {
-    fontSize: 18,
-    color: "#bbb",
-    fontWeight: "500",
-  },
-  cellMistake: {
-    backgroundColor: "#ffebee",
-    borderColor: "#f44336",
-    borderWidth: 1,
-  },
-  cellHighlighted: {
-    backgroundColor: "#fffde7",
-    borderColor: "#ffd600",
-    borderWidth: 1,
-  },
-  pendingListHorizontal: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  pendingItemColumn: {
-    flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "#eaf6ff",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    marginHorizontal: 4,
-    borderWidth: 1,
-    borderColor: "#1565c0",
-    minWidth: 32,
-    justifyContent: "center",
-  },
-  pendingItemInnerColumn: {
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  pendingItemActive: {
-    backgroundColor: "#bbdefb",
-  },
-  pendingNum: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#1565c0",
-    marginRight: 2,
-  },
-  pendingCountSmall: {
-    fontSize: 8,
-    color: "#333",
-    marginLeft: 2,
-  },
-  score: {
-    fontSize: 16,
-    color: "#388e3c",
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  endGameButton: {
-    backgroundColor: "#ffebee",
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    alignSelf: "center",
-    marginVertical: 12,
-    borderWidth: 1,
-    borderColor: "#f44336",
-  },
-  endGameText: {
-    color: "#f44336",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  congratsPopup: {
-    position: "absolute",
-    left: 24,
-    right: 24,
-    backgroundColor: "#e3fcef",
-    borderRadius: 20,
-    padding: 32,
-    alignItems: "center",
-    elevation: 8,
-    shadowColor: "#388e3c",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    zIndex: 100,
-  },
-  congratsText: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#388e3c",
-    marginBottom: 8,
-  },
-  congratsSubText: {
-    fontSize: 18,
-    color: "#1565c0",
-  },
-
-  congratsScore: {
-    fontSize: 20,
-    color: "#388e3c",
-    fontWeight: "bold",
-    marginTop: 12,
   },
   headerRight: {
     flexDirection: "row",
