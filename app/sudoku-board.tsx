@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5fa",
     padding: 16,
     minHeight: "100%",
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
   headerRow: {
     flexDirection: "row",
