@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import EndGameButton from "../components/EndGameButton";
+import PendingNumbers from "../components/PendingNumbers";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -306,32 +308,16 @@ export default function SudokuBoard() {
           </View>
         ))}
       </View>
+
       {/* Removed Pending Numbers title */}
-      <View style={styles.pendingListHorizontal}>
-        {Object.entries(pending).map(([num, count]) => (
-          <TouchableOpacity
-            key={num}
-            style={[
-              styles.pendingItemColumn,
-              selected ? styles.pendingItemActive : null,
-            ]}
-            disabled={!selected || count === 0}
-            onPress={() => handleNumberSelect(Number(num))}
-          >
-            <View style={styles.pendingItemInnerColumn}>
-              <Text style={styles.pendingNum}>{num}</Text>
-              <Text style={styles.pendingCountSmall}>{count}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <PendingNumbers
+        pending={pending}
+        selected={selected}
+        onSelect={handleNumberSelect}
+      />
 
       {/* End Game button at the end of the page content */}
-      {!isGameComplete && (
-        <TouchableOpacity style={styles.endGameButton} onPress={handleEndGame}>
-          <Text style={styles.endGameText}>End Game 😞</Text>
-        </TouchableOpacity>
-      )}
+      <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
     </ScrollView>
   );
 }
