@@ -33,7 +33,7 @@ export function generateSudokuMatrix(
 }
 
 export function getRevealCount(difficulty: string): number {
-  if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 78;
+  if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 40;
   if (difficulty === "Medium") return Math.floor(Math.random() * 3) + 30;
   return Math.floor(Math.random() * 3) + 20;
 }
