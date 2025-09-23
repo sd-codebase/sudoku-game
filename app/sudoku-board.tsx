@@ -12,6 +12,7 @@ import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
 import Mistakes from "../components/Mistakes";
 import PendingNumbers from "../components/PendingNumbers";
+import Score from "../components/Score";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -235,12 +236,7 @@ export default function SudokuBoard() {
         <Mistakes count={mistakes} />
         <View style={styles.headerRight}>
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
-          <Text
-            style={[
-              styles.score,
-              { color: score >= 0 ? "#388e3c" : "#d32f2f" },
-            ]}
-          >{`Score: ${score}`}</Text>
+          <Score value={score} />
         </View>
       </View>
 
