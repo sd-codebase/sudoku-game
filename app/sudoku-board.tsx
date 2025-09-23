@@ -135,11 +135,11 @@ export default function SudokuBoard() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRow}>
-        <Mistakes count={mistakes} />
         <View style={styles.headerRight}>
           <Timer seconds={seconds} />
           <Score value={score} />
         </View>
+        <Mistakes count={mistakes} />
       </View>
 
       {/* Congratulations message if game is complete */}

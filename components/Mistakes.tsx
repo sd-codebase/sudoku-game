@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 
 interface MistakesProps {
   count: number;
@@ -7,12 +7,7 @@ interface MistakesProps {
 
 export default function Mistakes({ count }: MistakesProps) {
   if (count <= 0) return null;
-  return (
-    <View style={[styles.mistakeBlock]}>
-      <Text style={styles.mistakeText}>Mistakes</Text>
-      <Text style={styles.mistakeCount}>({count})</Text>
-    </View>
-  );
+  return <Text style={styles.mistakeText}>Mistakes: {count}</Text>;
 }
 
 const styles = StyleSheet.create({
@@ -30,14 +25,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mistakeText: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#f44336",
+    color: "#d32f2f",
     marginRight: 2,
   },
   mistakeCount: {
-    fontSize: 8,
-    color: "#333",
+    fontSize: 16,
+    color: "#d32f2f",
+    fontWeight: "bold",
     marginLeft: 2,
   },
 });
