@@ -1,18 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
 import Mistakes from "../components/Mistakes";
 import PendingNumbers from "../components/PendingNumbers";
 import Score from "../components/Score";
+import SudokuGrid from "../components/SudokuGrid";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -247,40 +241,12 @@ export default function SudokuBoard() {
         score={score}
       />
 
-      <View style={styles.grid}>
-        {matrix.map((row, i) => (
-          <View key={i} style={styles.row}>
-            {row.map((cell, j) => {
-              const isSelected =
-                selected && selected.i === i && selected.j === j;
-              const isHighlighted = highlightedBlocks.some(
-                (b) => b.i === i && b.j === j
-              );
-              return (
-                <TouchableOpacity
-                  key={j}
-                  style={[
-                    styles.cell,
-                    cell.revealed ? styles.cellRevealed : styles.cellHidden,
-                    isSelected && styles.cellSelected,
-                    cell.mistake && styles.cellMistake,
-                    isHighlighted && styles.cellHighlighted,
-                  ]}
-                  onPress={() => setSelected({ i, j })}
-                >
-                  <Text
-                    style={
-                      cell.revealed ? styles.cellText : styles.cellTextHidden
-                    }
-                  >
-                    {cell.revealed ? cell.num : cell.userNum ?? ""}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        ))}
-      </View>
+      <SudokuGrid
+        matrix={matrix}
+        selected={selected}
+        highlightedBlocks={highlightedBlocks}
+        onSelect={setSelected}
+      />
 
       {/* Removed Pending Numbers title */}
       <PendingNumbers
