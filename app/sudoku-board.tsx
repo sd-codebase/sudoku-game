@@ -2,14 +2,15 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
-  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
+import Mistakes from "../components/Mistakes";
 import PendingNumbers from "../components/PendingNumbers";
 function formatTime(sec: number) {
   const m = Math.floor(sec / 60);
@@ -96,7 +97,7 @@ export default function SudokuBoard() {
   };
 
   function getRevealCount(difficulty: string): number {
-    if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 40; // 40-42
+    if (difficulty === "Easy") return Math.floor(Math.random() * 3) + 78; // 40-42
     if (difficulty === "Medium") return Math.floor(Math.random() * 3) + 30; // 30-32
     return Math.floor(Math.random() * 3) + 20; // 20-22
   }
@@ -231,21 +232,7 @@ export default function SudokuBoard() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRow}>
-        {/* <Text style={styles.title}>Sudoku Board ({difficulty})</Text> */}
-        {/* Show mistake block in pending number row */}
-        {mistakes > 0 && (
-          <View
-            style={[
-              styles.pendingItemColumn,
-              { backgroundColor: "#ffebee", borderColor: "#f44336" },
-            ]}
-          >
-            <Text style={[styles.pendingNum, { color: "#f44336" }]}>
-              Mistakes
-            </Text>
-            <Text style={styles.pendingCountSmall}>({mistakes})</Text>
-          </View>
-        )}
+        <Mistakes count={mistakes} />
         <View style={styles.headerRight}>
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
           <Text
@@ -258,21 +245,11 @@ export default function SudokuBoard() {
       </View>
 
       {/* Congratulations message if game is complete */}
-      {showCongrats && (
-        <Animated.View
-          style={[
-            styles.congratsPopup,
-            {
-              transform: [{ scale: congratsScale }],
-              top: Dimensions.get("window").height / 4,
-            },
-          ]}
-        >
-          <Text style={styles.congratsText}>🎉 Congratulations! 🎉</Text>
-          <Text style={styles.congratsSubText}>You completed the Sudoku!</Text>
-          <Text style={styles.congratsScore}>{`Your Score: ${score}`}</Text>
-        </Animated.View>
-      )}
+      <CongratsMessage
+        visible={showCongrats}
+        scale={congratsScale}
+        score={score}
+      />
 
       <View style={styles.grid}>
         {matrix.map((row, i) => (
