@@ -68,12 +68,11 @@ export default function SudokuGrid({
 const styles = StyleSheet.create({
   grid: {
     backgroundColor: "#e5e6ea",
-    margin: 12,
-    alignSelf: "stretch",
+    margin: 6,
+    width: "100%",
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    // borderRadius: 12,
   },
   row: {
     flexDirection: "row",

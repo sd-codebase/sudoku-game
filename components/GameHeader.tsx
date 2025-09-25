@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    paddingHorizontal: 24,
+    paddingHorizontal: 8,
     marginTop: 4,
   },
   timerContainer: {
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#3a3e4a",
     fontWeight: "500",
-    marginLeft: 2,
   },
   mistakesContainer: {
     flexDirection: "row",
