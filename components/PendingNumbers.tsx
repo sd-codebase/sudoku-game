@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     marginBottom: 12,
+    paddingHorizontal: 8,
   },
   pendingItemColumn: {
     flexDirection: "column",
@@ -65,11 +66,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#1565c0",
-    marginRight: 2,
   },
   pendingCountSmall: {
     fontSize: 8,
     color: "#333",
-    marginLeft: 2,
   },
 });

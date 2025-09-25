@@ -113,8 +113,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#eb857e83",
   },
   cellHighlighted: {
-    backgroundColor: "#fffde7",
-    borderColor: "#ffd600",
-    borderWidth: 1,
+    backgroundColor: "#ffd50089",
   },
 });

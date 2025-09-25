@@ -1,7 +1,8 @@
 import GameHeader from "@/components/GameHeader";
+import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, StyleSheet } from "react-native";
+import { Animated, ScrollView, StyleSheet, View } from "react-native";
 import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
 import PendingNumbers from "../components/PendingNumbers";
@@ -126,67 +127,68 @@ export default function SudokuBoard() {
   // ...existing code...
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* <View style={styles.headerRow}>
-        <View style={styles.headerRight}>
-          <Timer seconds={seconds} />
-          <Score value={score} />
+    <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradientBg}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.card}>
+          <GameHeader
+            difficulty={difficulty as string}
+            time={seconds}
+            mistakes={mistakes}
+          />
+
+          {/* Congratulations message if game is complete */}
+          <CongratsMessage
+            visible={showCongrats}
+            scale={congratsScale}
+            score={score}
+          />
+
+          <SudokuGrid
+            matrix={matrix}
+            selected={selected}
+            highlightedBlocks={highlightedBlocks}
+            onSelect={setSelected}
+          />
+
+          <PendingNumbers
+            pending={pending}
+            selected={selected}
+            onSelect={handleNumberSelect}
+          />
+
+          <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
         </View>
-        <Mistakes count={mistakes} />
-      </View> */}
-      <GameHeader difficulty="Medium" time={seconds} mistakes={mistakes} />
-
-      {/* Congratulations message if game is complete */}
-      <CongratsMessage
-        visible={showCongrats}
-        scale={congratsScale}
-        score={score}
-      />
-
-      <SudokuGrid
-        matrix={matrix}
-        selected={selected}
-        highlightedBlocks={highlightedBlocks}
-        onSelect={setSelected}
-      />
-
-      {/* Removed Pending Numbers title */}
-      <PendingNumbers
-        pending={pending}
-        selected={selected}
-        onSelect={handleNumberSelect}
-      />
-
-      {/* End Game button at the end of the page content */}
-      <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: "#f5f5fa",
-    padding: 16,
+  gradientBg: {
+    flex: 1,
     minHeight: "100%",
     justifyContent: "center",
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    margin: 12,
-    marginBottom: 0,
   },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: 16,
+  container: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100%",
+    padding: 8,
   },
-  timer: {
-    fontSize: 16,
-    color: "#1565c0",
-    fontWeight: "bold",
-    marginRight: 12,
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 32,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    shadowColor: "#c471ed",
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.1,
+    shadowRadius: 32,
+    elevation: 8,
+    width: "100%",
+    maxWidth: 700,
+    alignItems: "center",
   },
 });

@@ -85,10 +85,7 @@ const styles = StyleSheet.create({
 export default function TabTwoScreen() {
   const router = useRouter();
   return (
-    <LinearGradient
-      colors={["#a445ff", "#c471ed", "#f64f59"]}
-      style={styles.gradient}
-    >
+    <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradient}>
       <View style={styles.card}>
         <Text style={styles.title}>Choose Difficulty</Text>
         <View style={styles.buttonColumn}>
