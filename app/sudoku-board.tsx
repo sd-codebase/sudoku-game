@@ -181,8 +181,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "rgba(255, 255, 255, 1)",
     borderRadius: 32,
-    paddingVertical: 48,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     alignItems: "center",
     shadowColor: "#6a5af9",
     shadowOffset: { width: 0, height: 12 },

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   heading: {
-    fontSize: 36,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#232a38",
     letterSpacing: 1,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timerText: {
-    fontSize: 22,
+    fontSize: 16,
     color: "#3a3e4a",
     fontWeight: "500",
   },
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mistakesText: {
-    fontSize: 22,
+    fontSize: 16,
     color: "#3a3e4a",
     fontWeight: "500",
   },
