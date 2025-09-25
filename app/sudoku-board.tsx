@@ -1,13 +1,11 @@
+import GameHeader from "@/components/GameHeader";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import { Animated, ScrollView, StyleSheet } from "react-native";
 import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
-import Mistakes from "../components/Mistakes";
 import PendingNumbers from "../components/PendingNumbers";
-import Score from "../components/Score";
 import SudokuGrid from "../components/SudokuGrid";
-import Timer from "../components/Timer";
 import { getHighlightedBlocks } from "../utils/highlight";
 import { handleNumberSelectUtil } from "../utils/numberSelect";
 import { getPendingNumbers } from "../utils/pending";
@@ -129,13 +127,14 @@ export default function SudokuBoard() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.headerRow}>
+      {/* <View style={styles.headerRow}>
         <View style={styles.headerRight}>
           <Timer seconds={seconds} />
           <Score value={score} />
         </View>
         <Mistakes count={mistakes} />
-      </View>
+      </View> */}
+      <GameHeader difficulty="Medium" time={seconds} mistakes={mistakes} />
 
       {/* Congratulations message if game is complete */}
       <CongratsMessage
