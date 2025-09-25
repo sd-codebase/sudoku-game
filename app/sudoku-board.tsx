@@ -12,11 +12,6 @@ import { getHighlightedBlocks } from "../utils/highlight";
 import { handleNumberSelectUtil } from "../utils/numberSelect";
 import { getPendingNumbers } from "../utils/pending";
 import { generateSudokuMatrix } from "../utils/sudoku";
-function formatTime(sec: number) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
 
 export default function SudokuBoard() {
   const router = useRouter();

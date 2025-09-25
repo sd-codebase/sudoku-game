@@ -1,67 +1,66 @@
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function HomeScreen() {
-  const router = useRouter();
-  return (
-    <View style={styles.container}>
-      <Image
-        source={require("@/assets/images/partial-react-logo.png")}
-        style={styles.logo}
-      />
-      <Text style={styles.title}>Sudoku Challenge</Text>
-      <Text style={styles.subtitle}>Sharpen your mind. Solve the puzzle!</Text>
-      <Pressable
-        style={({ pressed }) => [styles.startButton, pressed && styles.pressed]}
-        onPress={() => router.push("/explore")}
-      >
-        <Text style={styles.startButtonText}>Start Game</Text>
-      </Pressable>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
+  gradient: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#eaf6ff",
-    padding: 24,
+    minHeight: "100%",
+    minWidth: "100%",
+  },
+  card: {
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: 32,
+    paddingVertical: 48,
+    paddingHorizontal: 32,
+    alignItems: "center",
+    shadowColor: "#6a5af9",
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 32,
+    elevation: 12,
+    minWidth: 320,
+    maxWidth: 500,
   },
   logo: {
-    height: 120,
-    width: 180,
+    height: 128,
+    width: 128,
     marginBottom: 24,
     resizeMode: "contain",
   },
   title: {
-    fontSize: 32,
+    fontSize: 44,
     fontWeight: "bold",
-    color: "#1565c0",
-    marginBottom: 12,
+    color: "#fff",
+    marginBottom: 18,
     letterSpacing: 1,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 36,
     textAlign: "center",
   },
+  subtitle: {
+    fontSize: 20,
+    color: "#fff",
+    marginBottom: 36,
+    textAlign: "center",
+    fontWeight: "400",
+    lineHeight: 28,
+  },
   startButton: {
-    backgroundColor: "#1565c0",
-    paddingVertical: 18,
-    paddingHorizontal: 48,
-    borderRadius: 16,
-    shadowColor: "#000",
+    backgroundColor: "#fff",
+    paddingVertical: 14,
+    paddingHorizontal: 38,
+    borderRadius: 32,
+    shadowColor: "#6a5af9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 8,
     elevation: 6,
+    marginTop: 8,
   },
   startButtonText: {
-    color: "#fff",
+    color: "#7c3aed",
     fontSize: 22,
     fontWeight: "bold",
     letterSpacing: 0.5,
@@ -71,3 +70,31 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
 });
+
+export default function HomeScreen() {
+  const router = useRouter();
+  return (
+    <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradient}>
+      <View style={styles.card}>
+        <Image
+          source={require("@/assets/images/partial-react-logo.png")}
+          style={styles.logo}
+        />
+        <Text style={styles.title}>Sudoku Master</Text>
+        <Text style={styles.subtitle}>
+          Sharpen your mind and challenge yourself with this classic puzzle
+          game.
+        </Text>
+        <Pressable
+          style={({ pressed }) => [
+            styles.startButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={() => router.push("/explore")}
+        >
+          <Text style={styles.startButtonText}>Start Game</Text>
+        </Pressable>
+      </View>
+    </LinearGradient>
+  );
+}
