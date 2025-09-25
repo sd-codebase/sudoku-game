@@ -30,11 +30,18 @@ export default function SudokuGrid({
             const isHighlighted = highlightedBlocks.some(
               (b) => b.i === i && b.j === j
             );
+            // Calculate thick borders for 3x3 blocks
+            const borderStyles: any = {};
+            if (j % 3 === 0) borderStyles.borderLeftWidth = 3;
+            if (i % 3 === 0) borderStyles.borderTopWidth = 3;
+            if (j === 8) borderStyles.borderRightWidth = 3;
+            if (i === 8) borderStyles.borderBottomWidth = 3;
             return (
               <TouchableOpacity
                 key={j}
                 style={[
                   styles.cell,
+                  borderStyles,
                   cell.revealed ? styles.cellRevealed : styles.cellHidden,
                   isSelected && styles.cellSelected,
                   cell.mistake && styles.cellMistake,
@@ -60,14 +67,13 @@ export default function SudokuGrid({
 
 const styles = StyleSheet.create({
   grid: {
-    borderWidth: 2,
-    borderColor: "#1565c0",
-    backgroundColor: "#fff",
+    backgroundColor: "#e5e6ea",
     margin: 12,
     alignSelf: "stretch",
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
+    // borderRadius: 12,
   },
   row: {
     flexDirection: "row",
@@ -82,6 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minWidth: 0,
     minHeight: 0,
+    backgroundColor: "#e5e6ea",
   },
   cellRevealed: {
     backgroundColor: "#eaf6ff",
@@ -90,8 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   cellSelected: {
-    borderColor: "#1565c0",
-    borderWidth: 1,
+    backgroundColor: "#09a10c68",
   },
   cellText: {
     fontSize: 18,
@@ -104,9 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   cellMistake: {
-    backgroundColor: "#ffebee",
-    borderColor: "#f44336",
-    borderWidth: 1,
+    backgroundColor: "#eb857e83",
   },
   cellHighlighted: {
     backgroundColor: "#fffde7",
