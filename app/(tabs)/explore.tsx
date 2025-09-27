@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    backgroundColor: "rgba(255,255,255,0.13)",
+    backgroundColor: "#8f6be8",
     borderRadius: 36,
     paddingVertical: 48,
     paddingHorizontal: 32,
@@ -87,7 +87,7 @@ export default function TabTwoScreen() {
   return (
     <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradient}>
       <View style={styles.card}>
-        <Text style={styles.title}>Choose Difficulty</Text>
+        <Text style={styles.title}>Choose Level</Text>
         <View style={styles.buttonColumn}>
           <Pressable
             style={({ pressed }) => [

@@ -1,0 +1,65 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient for the main icon background (Deep Purple to Magenta) -->
+    <!-- <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A00E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8E2DE2;stop-opacity:1" />
+    </linearGradient> -->
+    
+    <!-- Filter for subtle drop shadow on the inner grid block -->
+    <filter id="dropshadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="5" result="offsetblur"/>
+      <feFlood flood-color="#000" flood-opacity="0.3"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. Outer Rounded Square Background (Gradient Fill) -->
+  <rect x="0" y="0" width="200" height="200" rx="40" fill="url(#iconGradient)"/>
+
+  <!-- 2. Inner Sudoku 3x3 Grid Container (White Card with Shadow) -->
+  <!-- Size 160x160. Updated rx to 40 to match the outer container. -->
+  <g filter="url(#dropshadow)">
+    <rect x="20" y="20" width="160" height="160" rx="40" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1"/>
+
+    <!-- 3. Sudoku Grid Content -->
+    <!-- Position translated to (30, 30) to maintain 10px padding inside the 160x160 card -->
+    <g transform="translate(30, 30)" stroke="#222222" stroke-width="1">
+      
+      <!-- Grid Lines: scaled to new 140x140 inner content area -->
+      <line x1="0" y1="46.67" x2="140" y2="46.67" />
+      <line x1="0" y1="93.33" x2="140" y2="93.33" />
+      <line x1="46.67" y1="0" x2="46.67" y2="140" />
+      <line x1="93.33" y1="0" x2="93.33" y2="140" />
+
+      <!-- Background highlight (scaled to 140x140) -->
+      <rect x="46.67" y="0" width="46.67" height="140" fill="#E0F7FA" opacity="0.8"/>
+      <rect x="0" y="46.67" width="140" height="46.67" fill="#E0F7FA" opacity="0.8"/>
+
+      <!-- The letters S U D O K U in the grid (Positions adjusted for new cell size) -->
+      
+      <!-- Row 1 -->
+      <text x="23.33" y="30" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">S</text>
+      <text x="70" y="30" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">U</text>
+      <!-- Number 9 with stroke added -->
+      <text x="116.67" y="30" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#FF4081" stroke="#FF4081" stroke-width="0.5" text-anchor="middle">9</text>
+
+      <!-- Row 2 -->
+      <!-- Number 4 with stroke added -->
+      <text x="23.33" y="76" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#FF4081" stroke="#FF4081" stroke-width="0.5" text-anchor="middle">4</text>
+      <text x="70" y="76" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">D</text>
+      <text x="116.67" y="76" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">O</text>
+
+      <!-- Row 3 -->
+      <text x="23.33" y="123" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">K</text>
+      <text x="70" y="123" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#392C70" text-anchor="middle">U</text>
+      <!-- Number 1 with stroke added -->
+      <text x="116.67" y="123" font-family="Inter, sans-serif" font-weight="bold" font-size="28" fill="#FF4081" stroke="#FF4081" stroke-width="0.5" text-anchor="middle">1</text>
+    </g>
+  </g>
+</svg>

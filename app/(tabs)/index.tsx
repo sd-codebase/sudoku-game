@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     minWidth: "100%",
   },
   card: {
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "#8f6be8",
     borderRadius: 32,
     paddingVertical: 48,
     paddingHorizontal: 32,
@@ -77,13 +77,12 @@ export default function HomeScreen() {
     <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradient}>
       <View style={styles.card}>
         <Image
-          source={require("@/assets/images/partial-react-logo.png")}
+          source={require("@/assets/images/app-logo.png")}
           style={styles.logo}
         />
-        <Text style={styles.title}>Sudoku Master</Text>
+        <Text style={styles.title}>Sudoku</Text>
         <Text style={styles.subtitle}>
           Sharpen your mind and challenge yourself with this classic puzzle
-          game.
         </Text>
         <Pressable
           style={({ pressed }) => [
@@ -92,7 +91,7 @@ export default function HomeScreen() {
           ]}
           onPress={() => router.push("/explore")}
         >
-          <Text style={styles.startButtonText}>Start Game</Text>
+          <Text style={styles.startButtonText}>Start</Text>
         </Pressable>
       </View>
     </LinearGradient>
