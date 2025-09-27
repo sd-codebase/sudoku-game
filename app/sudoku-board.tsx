@@ -125,6 +125,7 @@ export default function SudokuBoard() {
     if (blocks.length > 0) {
       const timeout = setTimeout(() => {
         setHighlightedBlocks([]);
+        setSelected(null);
       }, 2000);
       return () => clearTimeout(timeout);
     }
