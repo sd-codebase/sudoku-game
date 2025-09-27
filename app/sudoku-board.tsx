@@ -18,6 +18,113 @@ import { handleNumberSelectUtil } from "../utils/numberSelect";
 import { getPendingNumbers } from "../utils/pending";
 import { generateSudokuMatrix } from "../utils/sudoku";
 
+// const sudoku = require("@/assets/sample-data/sudoku-sample.json");
+
+const SudokuData = {
+  id: 1,
+  game_matrics: [
+    [
+      { num: 5 },
+      { num: 3 },
+      { num: 4 },
+      { num: 6 },
+      { num: 7 },
+      { num: 8 },
+      { num: 9 },
+      { num: 1 },
+      { num: 2 },
+    ],
+    [
+      { num: 6 },
+      { num: 7 },
+      { num: 2 },
+      { num: 1 },
+      { num: 9 },
+      { num: 5 },
+      { num: 3 },
+      { num: 4 },
+      { num: 8 },
+    ],
+    [
+      { num: 1 },
+      { num: 9 },
+      { num: 8 },
+      { num: 3 },
+      { num: 4 },
+      { num: 2 },
+      { num: 5 },
+      { num: 6 },
+      { num: 7 },
+    ],
+    [
+      { num: 8 },
+      { num: 5 },
+      { num: 9 },
+      { num: 7 },
+      { num: 6 },
+      { num: 1 },
+      { num: 4 },
+      { num: 2 },
+      { num: 3 },
+    ],
+    [
+      { num: 4 },
+      { num: 2 },
+      { num: 6 },
+      { num: 8 },
+      { num: 5 },
+      { num: 3 },
+      { num: 7 },
+      { num: 9 },
+      { num: 1 },
+    ],
+    [
+      { num: 7 },
+      { num: 1 },
+      { num: 3 },
+      { num: 9 },
+      { num: 2 },
+      { num: 4 },
+      { num: 8 },
+      { num: 5 },
+      { num: 6 },
+    ],
+    [
+      { num: 9 },
+      { num: 6 },
+      { num: 1 },
+      { num: 5 },
+      { num: 3 },
+      { num: 7 },
+      { num: 2 },
+      { num: 8 },
+      { num: 4 },
+    ],
+    [
+      { num: 2 },
+      { num: 8 },
+      { num: 7 },
+      { num: 4 },
+      { num: 1 },
+      { num: 9 },
+      { num: 6 },
+      { num: 3 },
+      { num: 5 },
+    ],
+    [
+      { num: 3 },
+      { num: 4 },
+      { num: 5 },
+      { num: 2 },
+      { num: 8 },
+      { num: 6 },
+      { num: 1 },
+      { num: 7 },
+      { num: 9 },
+    ],
+  ],
+};
+
 export default function SudokuBoard() {
   const router = useRouter();
   const [seconds, setSeconds] = useState(0);
@@ -62,9 +169,7 @@ export default function SudokuBoard() {
   }, [isGameComplete]);
 
   useEffect(() => {
-    // For demo, always load the sample file
-    const sudoku = require("@/assets/sample-data/sudoku-sample.json");
-    setMatrix(generateSudokuMatrix(sudoku, difficulty as string));
+    setMatrix(generateSudokuMatrix(SudokuData, difficulty as string));
   }, [difficulty]);
 
   type Cell = {
