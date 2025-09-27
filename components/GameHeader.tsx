@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
+    textAlign: "center",
     fontWeight: "bold",
     color: "#232a38",
     letterSpacing: 1,

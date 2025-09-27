@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export type Cell = {
   num: number;
@@ -32,10 +38,9 @@ export default function SudokuGrid({
             );
             // Calculate thick borders for 3x3 blocks
             const borderStyles: any = {};
-            if (j % 3 === 0) borderStyles.borderLeftWidth = 3;
-            if (i % 3 === 0) borderStyles.borderTopWidth = 3;
-            if (j === 8) borderStyles.borderRightWidth = 3;
-            if (i === 8) borderStyles.borderBottomWidth = 3;
+            if ([2, 5].includes(j)) borderStyles.borderRightWidth = 3;
+            if ([2, 5].includes(i)) borderStyles.borderBottomWidth = 3;
+
             return (
               <TouchableOpacity
                 key={j}
@@ -65,28 +70,37 @@ export default function SudokuGrid({
   );
 }
 
+const DeviceWidth = Math.min(
+  500,
+  Math.max(320, 0.9 * Dimensions.get("window").width)
+);
+
 const styles = StyleSheet.create({
   grid: {
     backgroundColor: "#e5e6ea",
-    margin: 6,
-    width: "100%",
-    aspectRatio: 1,
+    width: DeviceWidth - 32 - 16,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#bbb",
+    borderRadius: 12,
+    overflow: "hidden",
+    marginVertical: 16,
   },
   row: {
     flexDirection: "row",
+    width: "100%",
     flex: 1,
   },
   cell: {
     flex: 1,
-    aspectRatio: 1,
     borderWidth: 1,
     borderColor: "#bbb",
     justifyContent: "center",
     alignItems: "center",
     minWidth: 0,
     minHeight: 0,
+    padding: 4,
     backgroundColor: "#e5e6ea",
   },
   cellRevealed: {

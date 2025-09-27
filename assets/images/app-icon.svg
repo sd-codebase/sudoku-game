@@ -1,10 +1,10 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Gradient for the main icon background (Deep Purple to Magenta) -->
-    <!-- <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4A00E0;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#8E2DE2;stop-opacity:1" />
-    </linearGradient> -->
+    </linearGradient>
     
     <!-- Filter for subtle drop shadow on the inner grid block -->
     <filter id="dropshadow" x="-50%" y="-50%" width="200%" height="200%">

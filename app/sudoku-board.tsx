@@ -1,12 +1,18 @@
 import GameHeader from "@/components/GameHeader";
+import SudokuGrid from "@/components/SudokuGrid";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import CongratsMessage from "../components/CongratsMessage";
 import EndGameButton from "../components/EndGameButton";
 import PendingNumbers from "../components/PendingNumbers";
-import SudokuGrid from "../components/SudokuGrid";
 import { getHighlightedBlocks } from "../utils/highlight";
 import { handleNumberSelectUtil } from "../utils/numberSelect";
 import { getPendingNumbers } from "../utils/pending";
@@ -163,13 +169,22 @@ export default function SudokuBoard() {
   );
 }
 
+const DeviceWidth = Math.min(
+  500,
+  Math.max(320, 0.9 * Dimensions.get("window").width)
+);
+
 const styles = StyleSheet.create({
   gradientBg: {
     flex: 1,
-    minHeight: "100%",
     justifyContent: "center",
     alignItems: "center",
+    minHeight: "100%",
+    minWidth: "100%",
+    paddingInline: 16,
+    boxSizing: "border-box",
   },
+
   container: {
     flexGrow: 1,
     justifyContent: "center",
@@ -188,7 +203,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 32,
     elevation: 12,
-    minWidth: 320,
+    width: DeviceWidth - 32,
     maxWidth: 500,
   },
 });
