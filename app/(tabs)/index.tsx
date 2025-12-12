@@ -1,82 +1,80 @@
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { MinimalistColors, Typography, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100%",
-    minWidth: "100%",
-    paddingInline: 16,
-  },
-  card: {
-    backgroundColor: "#8f6be8",
-    borderRadius: 32,
-    paddingVertical: 48,
-    paddingHorizontal: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#6a5af9",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 32,
-    elevation: 12,
-    width: "100%",
-    maxWidth: 500,
-  },
-  logo: {
-    height: 128,
-    width: 128,
-    marginBottom: 24,
-    resizeMode: "contain",
-  },
-  title: {
-    fontSize: 44,
-    fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 18,
-    letterSpacing: 1,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 20,
-    color: "#fff",
-    marginBottom: 36,
-    textAlign: "center",
-    fontWeight: "400",
-    lineHeight: 28,
-  },
-  startButton: {
-    backgroundColor: "#fff",
-    paddingVertical: 14,
-    paddingHorizontal: 38,
-    borderRadius: 32,
-    shadowColor: "#6a5af9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
-    elevation: 6,
-    marginTop: 8,
-  },
-  startButtonText: {
-    color: "#7c3aed",
-    fontSize: 22,
-    fontWeight: "bold",
-    letterSpacing: 0.5,
-  },
-  pressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.97 }],
-  },
-});
+const createStyles = (isDark: boolean) => {
+  const colors = isDark ? MinimalistColors.dark : MinimalistColors.light;
+
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100%",
+      minWidth: "100%",
+      backgroundColor: colors.backgroundSecondary,
+      paddingHorizontal: Spacing.md,
+    },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: BorderRadius.xxl,
+      paddingVertical: Spacing.xxxl,
+      paddingHorizontal: Spacing.lg,
+      alignItems: "center",
+      justifyContent: "center",
+      ...Shadows.md,
+      width: "100%",
+      maxWidth: 500,
+    },
+    logo: {
+      height: 128,
+      width: 128,
+      marginBottom: Spacing.lg,
+      resizeMode: "contain",
+    },
+    title: {
+      ...Typography.h1,
+      color: colors.textPrimary,
+      marginBottom: Spacing.md,
+      textAlign: "center",
+    },
+    subtitle: {
+      ...Typography.bodyLarge,
+      color: colors.textSecondary,
+      marginBottom: Spacing.xl,
+      textAlign: "center",
+      paddingHorizontal: Spacing.md,
+    },
+    startButton: {
+      backgroundColor: "transparent",
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.xl,
+      borderRadius: BorderRadius.full,
+      borderWidth: 2,
+      borderColor: colors.accent,
+      marginTop: Spacing.sm,
+    },
+    startButtonText: {
+      ...Typography.button,
+      color: colors.accent,
+    },
+    pressed: {
+      opacity: 0.7,
+      transform: [{ scale: 0.97 }],
+    },
+  });
+};
 
 export default function HomeScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const styles = createStyles(isDark);
+
   return (
-    <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradient}>
+    <View style={styles.container}>
       <View style={styles.card}>
         <Image
           source={require("@/assets/images/app-logo.png")}
@@ -96,6 +94,6 @@ export default function HomeScreen() {
           <Text style={styles.startButtonText}>Start</Text>
         </Pressable>
       </View>
-    </LinearGradient>
+    </View>
   );
 }

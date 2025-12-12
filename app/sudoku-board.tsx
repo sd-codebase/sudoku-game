@@ -1,12 +1,10 @@
 import GameHeader from "@/components/GameHeader";
 import SudokuGrid from "@/components/SudokuGrid";
-import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
-  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
@@ -17,113 +15,10 @@ import { getHighlightedBlocks } from "../utils/highlight";
 import { handleNumberSelectUtil } from "../utils/numberSelect";
 import { getPendingNumbers } from "../utils/pending";
 import { generateSudokuMatrix } from "../utils/sudoku";
+import { MinimalistColors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
-// const sudoku = require("@/assets/sample-data/sudoku-sample.json");
-
-const SudokuData = {
-  id: 1,
-  game_matrics: [
-    [
-      { num: 5 },
-      { num: 3 },
-      { num: 4 },
-      { num: 6 },
-      { num: 7 },
-      { num: 8 },
-      { num: 9 },
-      { num: 1 },
-      { num: 2 },
-    ],
-    [
-      { num: 6 },
-      { num: 7 },
-      { num: 2 },
-      { num: 1 },
-      { num: 9 },
-      { num: 5 },
-      { num: 3 },
-      { num: 4 },
-      { num: 8 },
-    ],
-    [
-      { num: 1 },
-      { num: 9 },
-      { num: 8 },
-      { num: 3 },
-      { num: 4 },
-      { num: 2 },
-      { num: 5 },
-      { num: 6 },
-      { num: 7 },
-    ],
-    [
-      { num: 8 },
-      { num: 5 },
-      { num: 9 },
-      { num: 7 },
-      { num: 6 },
-      { num: 1 },
-      { num: 4 },
-      { num: 2 },
-      { num: 3 },
-    ],
-    [
-      { num: 4 },
-      { num: 2 },
-      { num: 6 },
-      { num: 8 },
-      { num: 5 },
-      { num: 3 },
-      { num: 7 },
-      { num: 9 },
-      { num: 1 },
-    ],
-    [
-      { num: 7 },
-      { num: 1 },
-      { num: 3 },
-      { num: 9 },
-      { num: 2 },
-      { num: 4 },
-      { num: 8 },
-      { num: 5 },
-      { num: 6 },
-    ],
-    [
-      { num: 9 },
-      { num: 6 },
-      { num: 1 },
-      { num: 5 },
-      { num: 3 },
-      { num: 7 },
-      { num: 2 },
-      { num: 8 },
-      { num: 4 },
-    ],
-    [
-      { num: 2 },
-      { num: 8 },
-      { num: 7 },
-      { num: 4 },
-      { num: 1 },
-      { num: 9 },
-      { num: 6 },
-      { num: 3 },
-      { num: 5 },
-    ],
-    [
-      { num: 3 },
-      { num: 4 },
-      { num: 5 },
-      { num: 2 },
-      { num: 8 },
-      { num: 6 },
-      { num: 1 },
-      { num: 7 },
-      { num: 9 },
-    ],
-  ],
-};
+const sudokuPuzzles = require("@/assets/sample-data/sudoku-sample.json");
 
 export default function SudokuBoard() {
   const router = useRouter();
@@ -139,7 +34,7 @@ export default function SudokuBoard() {
     };
   }, []);
   const { difficulty } = useLocalSearchParams();
-  // Removed duplicate matrix declaration
+  const [currentPuzzle, setCurrentPuzzle] = useState<any>(null);
   const [matrix, setMatrix] = useState<Cell[][]>([]);
   // Check if game is complete (all cells revealed)
   const isGameComplete =
@@ -169,7 +64,11 @@ export default function SudokuBoard() {
   }, [isGameComplete]);
 
   useEffect(() => {
-    setMatrix(generateSudokuMatrix(SudokuData, difficulty as string));
+    // Select random puzzle from array
+    const randomIndex = Math.floor(Math.random() * sudokuPuzzles.length);
+    const selectedPuzzle = sudokuPuzzles[randomIndex];
+    setCurrentPuzzle(selectedPuzzle);
+    setMatrix(generateSudokuMatrix(selectedPuzzle, difficulty as string));
   }, [difficulty]);
 
   type Cell = {
@@ -238,40 +137,43 @@ export default function SudokuBoard() {
 
   // ...existing code...
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const colors = isDark ? MinimalistColors.dark : MinimalistColors.light;
+  const styles = createStyles(colors);
+
   return (
-    <LinearGradient colors={["#8f6be8", "#6a5af9"]} style={styles.gradientBg}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.card}>
-          <GameHeader
-            difficulty={difficulty as string}
-            time={seconds}
-            mistakes={mistakes}
-          />
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <GameHeader
+          difficulty={difficulty as string}
+          time={seconds}
+          mistakes={mistakes}
+        />
 
-          {/* Congratulations message if game is complete */}
-          <CongratsMessage
-            visible={showCongrats}
-            scale={congratsScale}
-            score={score}
-          />
+        {/* Congratulations message if game is complete */}
+        <CongratsMessage
+          visible={showCongrats}
+          scale={congratsScale}
+          score={score}
+        />
 
-          <SudokuGrid
-            matrix={matrix}
-            selected={selected}
-            highlightedBlocks={highlightedBlocks}
-            onSelect={setSelected}
-          />
+        <SudokuGrid
+          matrix={matrix}
+          selected={selected}
+          highlightedBlocks={highlightedBlocks}
+          onSelect={setSelected}
+        />
 
-          <PendingNumbers
-            pending={pending}
-            selected={selected}
-            onSelect={handleNumberSelect}
-          />
+        <PendingNumbers
+          pending={pending}
+          selected={selected}
+          onSelect={handleNumberSelect}
+        />
 
-          <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
-        </View>
-      </ScrollView>
-    </LinearGradient>
+        <EndGameButton onPress={handleEndGame} show={!isGameComplete} />
+      </View>
+    </View>
   );
 }
 
@@ -280,36 +182,25 @@ const DeviceWidth = Math.min(
   Math.max(320, 0.9 * Dimensions.get("window").width)
 );
 
-const styles = StyleSheet.create({
-  gradientBg: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100%",
-    minWidth: "100%",
-    paddingInline: 16,
-    boxSizing: "border-box",
-  },
+const createStyles = (colors: typeof MinimalistColors.light) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.backgroundSecondary,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.sm,
+    },
 
-  container: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100%",
-    padding: 8,
-  },
-
-  card: {
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    borderRadius: 32,
-    paddingHorizontal: 12,
-    alignItems: "center",
-    shadowColor: "#6a5af9",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 32,
-    elevation: 12,
-    width: DeviceWidth - 32,
-    maxWidth: 500,
-  },
-});
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: BorderRadius.xxl,
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.sm,
+      alignItems: "center",
+      ...Shadows.md,
+      width: "95%",
+      maxWidth: 420,
+    },
+  });

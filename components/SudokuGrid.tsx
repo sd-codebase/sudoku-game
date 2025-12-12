@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { MinimalistColors, Typography, BorderRadius, Spacing } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export type Cell = {
   num: number;
@@ -27,6 +29,11 @@ export default function SudokuGrid({
   highlightedBlocks,
   onSelect,
 }: SudokuGridProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const colors = isDark ? MinimalistColors.dark : MinimalistColors.light;
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.grid}>
       {matrix.map((row, i) => (
@@ -38,8 +45,8 @@ export default function SudokuGrid({
             );
             // Calculate thick borders for 3x3 blocks
             const borderStyles: any = {};
-            if ([2, 5].includes(j)) borderStyles.borderRightWidth = 3;
-            if ([2, 5].includes(i)) borderStyles.borderBottomWidth = 3;
+            if ([2, 5].includes(j)) borderStyles.borderRightWidth = 2;
+            if ([2, 5].includes(i)) borderStyles.borderBottomWidth = 2;
 
             return (
               <TouchableOpacity
@@ -55,9 +62,11 @@ export default function SudokuGrid({
                 onPress={() => onSelect({ i, j })}
               >
                 <Text
-                  style={
-                    cell.revealed ? styles.cellText : styles.cellTextHidden
-                  }
+                  style={[
+                    styles.cellText,
+                    cell.revealed && styles.cellTextRevealed,
+                    !cell.revealed && cell.userNum && styles.cellTextUser,
+                  ]}
                 >
                   {cell.revealed ? cell.num : cell.userNum ?? ""}
                 </Text>
@@ -70,62 +79,81 @@ export default function SudokuGrid({
   );
 }
 
-const DeviceWidth = Math.min(
-  500,
-  Math.max(320, 0.9 * Dimensions.get("window").width)
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+
+// Calculate grid size to fit on screen while being square
+const headerHeight = 70;
+const pendingNumbersHeight = 120;
+const endGameButtonHeight = 68;
+const totalOtherContent = headerHeight + pendingNumbersHeight + endGameButtonHeight + 80;
+
+const maxGridSize = Math.min(
+  screenWidth * 0.9,
+  screenHeight - totalOtherContent,
+  380
 );
 
-const styles = StyleSheet.create({
-  grid: {
-    backgroundColor: "#e5e6ea",
-    width: DeviceWidth - 32 - 16,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 3,
-    borderColor: "#bbb",
-    borderRadius: 12,
-    overflow: "hidden",
-    marginVertical: 16,
-  },
-  row: {
-    flexDirection: "row",
-    width: "100%",
-    flex: 1,
-  },
-  cell: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#bbb",
-    justifyContent: "center",
-    alignItems: "center",
-    minWidth: 0,
-    minHeight: 0,
-    padding: 4,
-    backgroundColor: "#e5e6ea",
-  },
-  cellRevealed: {
-    backgroundColor: "#eaf6ff",
-  },
-  cellHidden: {
-    backgroundColor: "#fff",
-  },
-  cellSelected: {
-    backgroundColor: "#09a10c68",
-  },
-  cellText: {
-    fontSize: 18,
-    color: "#333",
-    fontWeight: "500",
-  },
-  cellTextHidden: {
-    fontSize: 18,
-    color: "#bbb",
-    fontWeight: "500",
-  },
-  cellMistake: {
-    backgroundColor: "#eb857e83",
-  },
-  cellHighlighted: {
-    backgroundColor: "#ffd50089",
-  },
-});
+const gridSize = Math.max(280, maxGridSize);
+
+const createStyles = (colors: typeof MinimalistColors.light) =>
+  StyleSheet.create({
+    grid: {
+      backgroundColor: colors.gridBackground,
+      width: gridSize,
+      height: gridSize,
+      aspectRatio: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      borderWidth: 2,
+      borderColor: colors.gridBorderThick,
+      borderRadius: BorderRadius.lg,
+      overflow: "hidden",
+      marginVertical: Spacing.sm,
+    },
+    row: {
+      flexDirection: "row",
+      width: "100%",
+      flex: 1,
+    },
+    cell: {
+      flex: 1,
+      borderWidth: 0.5,
+      borderColor: colors.gridBorder,
+      justifyContent: "center",
+      alignItems: "center",
+      minWidth: 0,
+      minHeight: 0,
+      padding: 4,
+      backgroundColor: colors.cellEmpty,
+    },
+    cellRevealed: {
+      backgroundColor: colors.cellRevealed,
+    },
+    cellHidden: {
+      backgroundColor: colors.cellEmpty,
+    },
+    cellSelected: {
+      backgroundColor: colors.cellSelected,
+      borderWidth: 2,
+      borderColor: colors.cellSelectedBorder,
+    },
+    cellText: {
+      ...Typography.cellNumber,
+      color: colors.textPrimary,
+    },
+    cellTextRevealed: {
+      color: colors.textSecondary,
+    },
+    cellTextUser: {
+      color: colors.accent,
+      fontWeight: '600' as any,
+    },
+    cellMistake: {
+      backgroundColor: colors.cellError,
+      borderWidth: 2,
+      borderColor: colors.cellErrorBorder,
+    },
+    cellHighlighted: {
+      backgroundColor: colors.cellHighlighted,
+    },
+  });

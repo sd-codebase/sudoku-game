@@ -1,6 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { MinimalistColors, Typography, Spacing } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 interface GameHeaderProps {
   difficulty: string;
@@ -19,30 +21,35 @@ export default function GameHeader({
   time,
   mistakes,
 }: GameHeaderProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const colors = isDark ? MinimalistColors.dark : MinimalistColors.light;
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headingRow}>
-        <Text style={styles.heading}>Sudoku - {difficulty}</Text>
+        <Text style={styles.heading}>{difficulty}</Text>
       </View>
       <View style={styles.infoRow}>
-        <View style={styles.timerContainer}>
+        <View style={styles.statContainer}>
           <MaterialIcons
-            name="access-time"
-            size={28}
-            color="#e0569b"
-            style={{ marginRight: 6 }}
+            name="schedule"
+            size={20}
+            color={colors.textSecondary}
+            style={{ marginRight: Spacing.xs }}
           />
-          <Text style={styles.timerText}>{formatTime(time)}</Text>
+          <Text style={styles.statText}>{formatTime(time)}</Text>
         </View>
-        <View style={styles.mistakesContainer}>
+        <View style={styles.statContainer}>
           <MaterialIcons
-            name="close"
-            size={32}
-            color="#e05656"
-            style={{ marginRight: 6 }}
+            name="error-outline"
+            size={20}
+            color={colors.error}
+            style={{ marginRight: Spacing.xs }}
           />
-          <Text style={styles.mistakesText}>
-            Mistakes: <Text style={styles.mistakesCount}>{mistakes}</Text>
+          <Text style={styles.statText}>
+            <Text style={styles.mistakesCount}>{mistakes}</Text>
           </Text>
         </View>
       </View>
@@ -50,52 +57,42 @@ export default function GameHeader({
   );
 }
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    width: "100%",
-    paddingTop: 18,
-    paddingBottom: 8,
-  },
-  headingRow: {
-    width: "100%",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  heading: {
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: "#232a38",
-    letterSpacing: 1,
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    paddingHorizontal: 8,
-    marginTop: 4,
-  },
-  timerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  timerText: {
-    fontSize: 16,
-    color: "#3a3e4a",
-    fontWeight: "500",
-  },
-  mistakesContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  mistakesText: {
-    fontSize: 16,
-    color: "#3a3e4a",
-    fontWeight: "500",
-  },
-  mistakesCount: {
-    color: "#e05656",
-    fontWeight: "bold",
-  },
-});
+const createStyles = (colors: typeof MinimalistColors.light) =>
+  StyleSheet.create({
+    headerContainer: {
+      width: "100%",
+      paddingTop: Spacing.sm,
+      paddingBottom: Spacing.xs,
+    },
+    headingRow: {
+      width: "100%",
+      alignItems: "center",
+      marginBottom: Spacing.xs,
+    },
+    heading: {
+      ...Typography.h4,
+      textAlign: "center",
+      color: colors.textPrimary,
+    },
+    infoRow: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      width: "100%",
+      paddingHorizontal: Spacing.sm,
+      marginTop: 0,
+    },
+    statContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    statText: {
+      ...Typography.bodySmall,
+      color: colors.textSecondary,
+    },
+    mistakesCount: {
+      ...Typography.bodySmall,
+      color: colors.error,
+      fontWeight: "600" as any,
+    },
+  });
